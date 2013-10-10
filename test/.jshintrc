@@ -1,0 +1,8 @@
+{
+  "globals": {
+    "expect": false,
+    "run": false
+  },
+  "expr": true,
+  "debug": true
+}

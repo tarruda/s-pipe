@@ -1,0 +1,12 @@
+language: node_js
+
+node_js:
+- '0.10'
+
+before_script:
+- npm install -g grunt-cli
+
+# Add username/access keys as encrypted environment variables:
+# gem install travis
+# travis encrypt SAUCE_USERNAME=[PROJECT_USERNAME] -r [github user]/[github project] --add
+# travis encrypt SAUCE_ACCESS_KEY=[PROJECT_ACCESS_KEY] -r [github user]/[github project] --add

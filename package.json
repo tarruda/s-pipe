@@ -1,0 +1,42 @@
+{
+  "name": "lispy",
+  "description": "Functional streams, with a list-inspired chaining syntax",
+  "version": "0.0.0",
+  "homepage": "https://github.com/tarruda/lispy",
+  "author": {
+    "name": "Thiago de Arruda",
+    "email": "tpadilha84@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tarruda/lispy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tarruda/lispy/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/tarruda/lispy/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "./lib/index",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-livereload": "~0.1.2",
+    "grunt-mocha-debug": "~0.0.8",
+    "grunt-newer": "~0.5.4",
+    "powerbuild": "~0.0.9",
+    "grunt-saucelabs": "~4.1.2",
+    "grunt-exec-jshint": "~0.0.0",
+    "grunt-release": "~0.5.1"
+  },
+  "dependencies": {
+    "classic": "0.0.2"
+  },
+  "scripts": {
+    "test": "grunt ci"
+  }
+}
