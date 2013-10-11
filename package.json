@@ -1,6 +1,6 @@
 {
   "name": "s-pipe",
-  "description": "Functional streams, with a list-inspired chaining syntax",
+  "description": "Functional streams, with a lisp-inspired chaining syntax",
   "version": "0.0.0",
   "homepage": "https://github.com/tarruda/s-pipe",
   "author": {

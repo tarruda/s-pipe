@@ -1,6 +1,6 @@
 # s-pipe
 
-> Functional streams, with a list-inspired chaining syntax
+> Functional streams, with a lisp-inspired chaining syntax
 
 ## Installation
 

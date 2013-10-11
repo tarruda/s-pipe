@@ -13,7 +13,7 @@ runMocha({
       deepEqual(spipe(array({'0': 2, 4: 5, length: 5}))(), [2, u, u, u, 5]);
     },
 
-    'as normal stream': function(done) {
+    'lazily evaluate the stream': function(done) {
       var result = [];
       var stream = spipe(array([1, 2, 3]), true)();
       stream.on('data', function(n) { result.push(n); });

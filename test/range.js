@@ -29,7 +29,7 @@ runMocha({
       deepEqual(spipe(range(10, 1, 6))(), [10, 4]);
     },
 
-    'as normal stream': function(done) {
+    'lazily evaluate the stream': function(done) {
       var result = [];
       var stream = spipe(range(1, 10, 4), true)();
       stream.on('data', function(n) {
