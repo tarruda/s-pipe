@@ -1,23 +1,23 @@
 {
-  "name": "lispy",
+  "name": "s-pipe",
   "description": "Functional streams, with a list-inspired chaining syntax",
   "version": "0.0.0",
-  "homepage": "https://github.com/tarruda/lispy",
+  "homepage": "https://github.com/tarruda/s-pipe",
   "author": {
     "name": "Thiago de Arruda",
     "email": "tpadilha84@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tarruda/lispy.git"
+    "url": "git://github.com/tarruda/s-pipe.git"
   },
   "bugs": {
-    "url": "https://github.com/tarruda/lispy/issues"
+    "url": "https://github.com/tarruda/s-pipe/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/tarruda/lispy/blob/master/LICENSE-MIT"
+      "url": "https://github.com/tarruda/s-pipe/blob/master/LICENSE-MIT"
     }
   ],
   "main": "./lib/index",

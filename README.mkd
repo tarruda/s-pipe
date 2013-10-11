@@ -1,11 +1,11 @@
-# lispy
+# s-pipe
 
 > Functional streams, with a list-inspired chaining syntax
 
 ## Installation
 
 ```sh
-npm install --save lispy
+npm install --save s-pipe
 ```
 
 ## Usage
@@ -15,8 +15,8 @@ npm install --save lispy
 Clone, install dependencies and re-test whenever some file is modified:
 
 ```sh
-git clone git://github.com/tarruda/lispy.git
-cd lispy
+git clone git://github.com/tarruda/s-pipe.git
+cd s-pipe
 npm install
 grunt
 ```

@@ -1,4 +1,4 @@
-var lispy = require('../lib/lispy');
+var spipe = require('../lib/s-pipe');
 var range = require('../lib/range');
 var array = require('../lib/array');
 var map = require('../lib/map');
@@ -11,12 +11,12 @@ function toPower(n) { return n * n; }
 runMocha({
   'Map': {
     'transform each object synchronously': function() {
-      deepEqual(lispy(range(1, 10, 3))(map, toDouble)(), [2, 8, 14, 20]);
+      deepEqual(spipe(range(1, 10, 3))(map, toDouble)(), [2, 8, 14, 20]);
     },
 
     'transform each object asynchronously': function(done) {
       var result = [];
-      var stream = lispy(range(1, 10, 3), true)(map, toPower)();
+      var stream = spipe(range(1, 10, 3), true)(map, toPower)();
 
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {
