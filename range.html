@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>range.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="all.html">
+                all.js
+              </a>
+            
+              
+              <a class="source" href="any.html">
+                any.js
+              </a>
+            
+              
+              <a class="source" href="anything.html">
+                anything.js
+              </a>
+            
+              
+              <a class="source" href="array.html">
+                array.js
+              </a>
+            
+              
+              <a class="source" href="filter.html">
+                filter.js
+              </a>
+            
+              
+              <a class="source" href="find.html">
+                find.js
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.js
+              </a>
+            
+              
+              <a class="source" href="map.html">
+                map.js
+              </a>
+            
+              
+              <a class="source" href="pull.html">
+                pull.js
+              </a>
+            
+              
+              <a class="source" href="range.html">
+                range.js
+              </a>
+            
+              
+              <a class="source" href="reduce.html">
+                reduce.js
+              </a>
+            
+              
+              <a class="source" href="s-pipe.html">
+                s-pipe.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>range.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> AnythingStream = require(<span class="string">'./anything'</span>);
+
+
+<span class="keyword">var</span> undef;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>RangeStream is a Readable stream that will produce a sequence of numbers
+starting from &#39;start&#39;, and ending at most at &#39;end&#39;(no values greater than
+end can be emitted). The optional &#39;step&#39; argument defaults to 1.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> RangeStream = AnythingStream.extend({
+  constructor: <span class="function"><span class="keyword">function</span> <span class="title">RangeStream</span><span class="params">(start, end, step)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Since we are emitting numbers, &#39;objectMode&#39; is required</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    AnythingStream.call(<span class="keyword">this</span>, {objectMode: <span class="literal">true</span>});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>If only the &#39;start&#39; argument is provided, it will be considered as
+a range from 0 to &#39;start&#39;</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (end === undef || end === <span class="literal">null</span>) {
+      end = start;
+      start = <span class="number">0</span>;
+    }
+
+    <span class="keyword">this</span>._current = start;
+    <span class="keyword">this</span>._end = end;
+    <span class="keyword">this</span>._step = step || <span class="number">1</span>;
+  },
+
+  _next: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> rv = <span class="keyword">this</span>._current;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>The &#39;_update&#39; method is implemented by a subclass, and will either
+increment or decrement the value depending on the comparison of the
+&#39;start&#39; and &#39;end&#39; parameters</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">this</span>._update();
+    <span class="keyword">return</span> rv;
+  }
+});
+
+
+<span class="keyword">var</span> IncreasingRangeStream = RangeStream.extend({</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>The constructor is only defined to improve debugging experience</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  constructor: <span class="function"><span class="keyword">function</span> <span class="title">IncreasingRangeStream</span><span class="params">(start, end, step)</span> {</span>
+    RangeStream.call(<span class="keyword">this</span>, start, end, step);
+  },
+
+  _done: <span class="keyword">function</span>() { <span class="keyword">return</span> <span class="keyword">this</span>._current &gt; <span class="keyword">this</span>._end; },
+
+  _update: <span class="keyword">function</span>() { <span class="keyword">this</span>._current += <span class="keyword">this</span>._step; }
+});
+
+
+<span class="keyword">var</span> DecreasingRangeStream = RangeStream.extend({
+  constructor: <span class="function"><span class="keyword">function</span> <span class="title">DecreasingRangeStream</span><span class="params">(start, end, step)</span> {</span>
+    RangeStream.call(<span class="keyword">this</span>, start, end, step);
+  },
+
+  _done: <span class="keyword">function</span>() { <span class="keyword">return</span> <span class="keyword">this</span>._current &lt; <span class="keyword">this</span>._end; },
+
+  _update: <span class="keyword">function</span>() { <span class="keyword">this</span>._current -= <span class="keyword">this</span>._step; }
+});
+
+
+module.exports = <span class="function"><span class="keyword">function</span> <span class="title">range</span><span class="params">(start, end, step)</span> {</span>
+  <span class="keyword">return</span> end === undef || end === <span class="literal">null</span> || start &lt; end ?
+    <span class="keyword">new</span> IncreasingRangeStream(start, end, step) : 
+    <span class="keyword">new</span> DecreasingRangeStream(start, end, step);
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>s-pipe.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="all.html">
+                all.js
+              </a>
+            
+              
+              <a class="source" href="any.html">
+                any.js
+              </a>
+            
+              
+              <a class="source" href="anything.html">
+                anything.js
+              </a>
+            
+              
+              <a class="source" href="array.html">
+                array.js
+              </a>
+            
+              
+              <a class="source" href="filter.html">
+                filter.js
+              </a>
+            
+              
+              <a class="source" href="find.html">
+                find.js
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.js
+              </a>
+            
+              
+              <a class="source" href="map.html">
+                map.js
+              </a>
+            
+              
+              <a class="source" href="pull.html">
+                pull.js
+              </a>
+            
+              
+              <a class="source" href="range.html">
+                range.js
+              </a>
+            
+              
+              <a class="source" href="reduce.html">
+                reduce.js
+              </a>
+            
+              
+              <a class="source" href="s-pipe.html">
+                s-pipe.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>s-pipe.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> undef;
+<span class="keyword">var</span> slice = Array.prototype.slice;
+
+
+module.exports = <span class="function"><span class="keyword">function</span> <span class="title">spipe</span><span class="params">(stream)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>The &#39;pipeline&#39; function returns itself until called with no
+arguments or a false value.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">pipeline</span><span class="params">(fn)</span> {</span>
+    <span class="keyword">if</span> (arguments.length &amp;&amp; <span class="keyword">typeof</span> fn === <span class="string">'function'</span>) {
+      <span class="keyword">var</span> args = slice.call(arguments, <span class="number">1</span>);
+      stream = fn.apply(stream, args);
+      <span class="keyword">return</span> pipeline;
+    }
+
+    <span class="keyword">var</span> eagerEvaluation = fn;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>If &#39;eagerEvaluation&#39; is true(default), we will try to eagerly evaluate
+the entire stream by hooking into its &#39;data&#39; event and buffering
+the results into an array.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (eagerEvaluation === undef || eagerEvaluation === <span class="literal">null</span>)
+      eagerEvaluation = <span class="literal">true</span>;
+
+    <span class="keyword">if</span> (eagerEvaluation) {
+      <span class="keyword">var</span> buffer, tmpHandler, ended = <span class="literal">false</span>;
+
+      stream.on(<span class="string">'data'</span>, <span class="keyword">function</span>(data) {
+        buffer = buffer || [];
+        buffer.push(data);
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>If the stream is done emitting data, return the buffer</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> (stream._done &amp;&amp; stream._done())
+        <span class="keyword">return</span> buffer || [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Remove all listeners</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      stream.removeAllListeners(<span class="string">'data'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>If we consumed anything synchronously but the stream didnt complete,
+send it back so the caller can consume it</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> (buffer.length) {
+        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, l = buffer.length; i &lt; l; i++)
+          stream.unshift(buffer[i]);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Put the stream in its default paused state</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      stream.pause();
+    }
+
+    <span class="keyword">return</span> stream;
+  };
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

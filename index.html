@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>index.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="all.html">
+                all.js
+              </a>
+            
+              
+              <a class="source" href="any.html">
+                any.js
+              </a>
+            
+              
+              <a class="source" href="anything.html">
+                anything.js
+              </a>
+            
+              
+              <a class="source" href="array.html">
+                array.js
+              </a>
+            
+              
+              <a class="source" href="filter.html">
+                filter.js
+              </a>
+            
+              
+              <a class="source" href="find.html">
+                find.js
+              </a>
+            
+              
+              <a class="source" href="index.html">
+                index.js
+              </a>
+            
+              
+              <a class="source" href="map.html">
+                map.js
+              </a>
+            
+              
+              <a class="source" href="pull.html">
+                pull.js
+              </a>
+            
+              
+              <a class="source" href="range.html">
+                range.js
+              </a>
+            
+              
+              <a class="source" href="reduce.html">
+                reduce.js
+              </a>
+            
+              
+              <a class="source" href="s-pipe.html">
+                s-pipe.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>index.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>module.exports = require(<span class="string">'./s-pipe'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h3>s-pipe</h3>
+<p>This package provides a range of utility functions with simple/nice API for
+playing with <a href="http://nodejs.org/api/stream.html">streams</a>. For those who
+dont know, streams are a nice node.js abstraction for handling any kind of
+IO. It also works through
+<a href="https://github.com/substack/node-browserify">browserify</a>.</p>
+<p>Streams can be used to solve a great range of problems. For a introduction
+on streams, read @substack &#39;s <a href="https://github.com/substack/stream-handbook">stream
+handbook</a>.</p>
+<p>The API exposed by this module was first proposed by @mlanza in an
+<a href="https://github.com/jashkenas/underscore/pull/1183">underscore PR</a> and is
+based on <a href="http://www.lispworks.com/documentation/lw60/KW-W/html/kwprolog-w-31.htm#pgfId-889886">lisp chaining
+syntax</a></p>
+<h2>Usage</h2>
+<pre><code class="lang-js">var spipe = require(&#39;s-pipe&#39;);
+var array = require(&#39;s-pipe/lib/array&#39;);
+var filter = require(&#39;s-pipe/lib/filter&#39;);
+var map = require(&#39;s-pipe/lib/map&#39;);
+var reduce = require(&#39;s-pipe/lib/reduce&#39;);
+
+spipe(array([1,2,3,4,5]))
+     (filter, function(n) { return n &gt; 3; })
+     (map, function(n) { return n * n; })
+     (reduce, function(result, n) { return result + n; })
+     (); // returns [41]</code></pre>
+<p>Explanation:</p>
+<ul>
+<li>The &#39;spipe&#39; function accepts a single readable stream and returns a
+chainable function. The chain terminates when called without a function
+as first argument.</li>
+<li>The &#39;array&#39; function creates a readable stream that emits the array
+elements.</li>
+<li>The &#39;filter&#39;, &#39;map&#39; and &#39;reduce&#39; function are applied consecutively over
+each other to create a composite stream.</li>
+<li>The last call without arguments ends the chain and its return value
+depends on the stream pipeline:<ul>
+<li>If the stream emitted all of its &#39;data&#39; events synchronously, an array
+containing the chunks will be returned.</li>
+<li>If a false value was passed as first argument or the stream is
+asynchronous, the stream will be returned and may be used like any
+other readable stream.</li>
+</ul>
+</li>
+</ul>
+<p>Data is processed by each layer of the pipeline as soon as its available, no
+buffering ever happens. This opens the possibility for doing things like:</p>
+<pre><code class="lang-js">var range = require(&#39;s-pipe/lib/range&#39;);
+
+spipe(range(1, 1000000000))
+     (map, function(n) { return {square: n * n, number: n}; })
+     (find, function(obj) { return obj.square &gt;= 81; })
+     (map, function(n) { return n.number; })
+     (); // [9]</code></pre>
+<p>The &#39;range&#39; function above returns a readable stream that yields numbers
+from 1 to 1000000000. The above chain returns very fast because the pipeline
+will be closed as soon as 81 reaches the &#39;find&#39; stream.</p>
+<p>As shown above, the functions are kept in separate files for optimzed builds
+with browserify.</p>
+
+            </div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
