@@ -70,6 +70,7 @@ module.exports = function(grunt) {
       },
       browser: {
         options: {
+          timeout: 1200000,
           listenAddress: '0.0.0.0',
           listenPort: 8000,
           phantomjs: true,
