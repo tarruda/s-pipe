@@ -16,9 +16,7 @@ runMocha({
     'as normal stream': function(done) {
       var result = [];
       var stream = lispy(array([1, 2, 3]), true)();
-      stream.on('data', function(n) {
-        result.push(n);
-      });
+      stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {
         deepEqual(result, [1, 2, 3]);
         done();
