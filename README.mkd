@@ -8,7 +8,30 @@
 npm install --save s-pipe
 ```
 
+This package provides a simple, beautiful API for composing
+[streams](http://nodejs.org/api/stream.html) which are a nice abstraction
+over sequences of values created by node.js and
+[ported to web browsers](https://github.com/substack/node-browserify).
+
+Streams can be used to solve a great range of problems. For a introduction on
+streams, read @substack 's [stream
+handbook](https://github.com/substack/stream-handbook).
+
+This API was designed by @mlanza in an [underscore
+PR](https://github.com/jashkenas/underscore/pull/1183) and is based on
+[lisp chaining
+syntax](http://www.lispworks.com/documentation/lw60/KW-W/html/kwprolog-w-31.htm#pgfId-889886)
+
 ## Usage
+
+```js
+var spipe = require('s-pipe');
+var filter = require('s-pipe/lib/filter');
+var map = require('s-pipe/lib/map');
+var reduce = require('s-pipe/lib/reduce');
+
+// spipe should be called with a single stream argument argument pa
+```
 
 ## Development
 

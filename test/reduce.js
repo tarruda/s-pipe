@@ -9,11 +9,11 @@ function toSum(result, n) { return result + n; }
 runMocha({
   'ReduceStream': {
     'reduce values synchronously': function() {
-      deepEqual(spipe(range(1, 3))(reduce, toSum)(), 6);
+      deepEqual(spipe(range(1, 3))(reduce, toSum)(), [6]);
     },
 
     'reduce values with an initial value': function() {
-      deepEqual(spipe(range(1, 3))(reduce, toSum, 100)(), 106);
+      deepEqual(spipe(range(1, 3))(reduce, toSum, 100)(), [106]);
     },
 
     'lazily evaluate the stream': function(done) {
