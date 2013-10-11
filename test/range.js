@@ -4,6 +4,10 @@ var range = require('../lib/range');
 
 runMocha({
   'RangeStream': {
+    'returning synchronously': function() {
+      equal(lispy(range(1, 1000))().length, 1000);
+    },
+
     'increasing range': function() {
       deepEqual(lispy(range(1, 10))(), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     },
