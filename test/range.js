@@ -24,5 +24,17 @@ runMocha({
       deepEqual(lispy(range(1, 10, 6))(), [1, 7]);
       deepEqual(lispy(range(10, 1, 6))(), [10, 4]);
     },
+
+    'as normal stream': function(done) {
+      var result = [];
+      var stream = lispy(range(1, 10, 4), true)();
+      stream.on('data', function(n) {
+        result.push(n);
+      });
+      stream.on('end', function() {
+        deepEqual(result, [1, 5, 9]);
+        done();
+      });
+    }
   }
 });
