@@ -15,7 +15,7 @@ runMocha({
 
     'lazily evaluate the stream': function(done) {
       var result = [];
-      var stream = spipe(array([1, 2, 3]), true)();
+      var stream = spipe(array([1, 2, 3]))(false);
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {
         deepEqual(result, [1, 2, 3]);

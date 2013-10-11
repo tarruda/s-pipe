@@ -14,7 +14,7 @@ runMocha({
 
     'lazily evaluate the stream': function(done) {
       var result = [];
-      var stream = spipe(range(1, 10), true)(filter, even)();
+      var stream = spipe(range(1, 10))(filter, even)(false);
 
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {

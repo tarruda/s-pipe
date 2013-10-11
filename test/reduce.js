@@ -18,7 +18,7 @@ runMocha({
 
     'lazily evaluate the stream': function(done) {
       var result = [];
-      var stream = spipe(range(1, 10, 3), true)(reduce, toSum)();
+      var stream = spipe(range(1, 10, 3))(reduce, toSum)(false);
 
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {
