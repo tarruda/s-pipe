@@ -39,6 +39,10 @@ runMocha({
         deepEqual(result, [1, 5, 9]);
         done();
       });
+    },
+
+    'only specify first argument to create ranges from 0': function() {
+      deepEqual(lispy(range(5))(), [0, 1, 2, 3, 4, 5]);
     }
   }
 });
