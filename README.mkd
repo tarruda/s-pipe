@@ -14,10 +14,10 @@
 npm install --save s-pipe
 ```
 
-This package provides a utility functions and simple/nice API for composing
-[streams](http://nodejs.org/api/stream.html). For those who dont know, streams
-are a nice abstraction over sequences of values created by node.js and
-[ported to web browsers](https://github.com/substack/node-browserify).
+This package provides a range of utility functions with simple/nice API for
+playing with [streams](http://nodejs.org/api/stream.html). For those who dont
+know, streams are a nice node.js abstraction for handling any kind of IO. It
+also works through [browserify](https://github.com/substack/node-browserify).
 
 Streams can be used to solve a great range of problems. For a introduction on
 streams, read @substack 's [stream
