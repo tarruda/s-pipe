@@ -5,8 +5,10 @@
 #### Node.js:
 [![Build Status](https://travis-ci.org/tarruda/s-pipe.png)](https://travis-ci.org/tarruda/s-pipe)
 
+<!--
 #### Browsers:
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/tarruda_spipe.svg)](https://saucelabs.com/u/tarruda_spipe)
+-->
 
 ## Installation
 

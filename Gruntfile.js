@@ -132,6 +132,6 @@ module.exports = function(grunt) {
   ]);
   
   grunt.registerTask('publish', ['rebuild', 'release']);
-  grunt.registerTask('ci', ['test', 'saucelabs-mocha']);
+  grunt.registerTask('ci', ['test']);
   grunt.registerTask('default', ['test', 'livereload-start', 'watch']);
 };
