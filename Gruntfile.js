@@ -49,7 +49,6 @@ module.exports = function(grunt) {
       },
       dist: {
         options: {
-          // export: 'lib/index.js',
           compress: true
         },
         files: [
@@ -70,7 +69,6 @@ module.exports = function(grunt) {
       },
       browser: {
         options: {
-          timeout: 1200000,
           listenAddress: '0.0.0.0',
           listenPort: 8000,
           phantomjs: true,
@@ -87,7 +85,7 @@ module.exports = function(grunt) {
           build: process.env.TRAVIS_JOB_ID,
           concurrency: 3,
           browsers: browsers,
-          testname: "<%= pkg.name %>",
+          testTimeout: 1200000,
           tags: ["master"]
         }
       }
