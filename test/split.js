@@ -10,7 +10,7 @@ var split = require('../lib/split');
 var StubTextStream = classic({
   constructor: function StubTextStream() {
     Readable.call(this);
-    this._async = false;
+    this.async = false;
     this._chunks = [
       'Some text ',
       'that is ',
@@ -24,7 +24,7 @@ var StubTextStream = classic({
   _read: function() {
     var _this = this;
 
-    if (this._async) {
+    if (this.async) {
       setImmediate(function() { _this.push(_this._chunks.shift()); });
     } else {
       this.push(this._chunks.shift());
@@ -57,7 +57,7 @@ runMocha({
       this.input.async = true;
 
       var result = [];
-      var stream = spipe(this.input)(split)(false);
+      var stream = spipe(this.input)(split)();
 
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {
