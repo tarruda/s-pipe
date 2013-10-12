@@ -21,6 +21,13 @@ playing with [streams](http://nodejs.org/api/stream.html). For those who dont
 know, streams are a nice node.js abstraction for handling any kind of IO. It
 also works through [browserify](https://github.com/substack/node-browserify).
 
+Besides normal async streams, the functions in this package may be used with
+arrays, ranges and strings like one would use lodash/underscore. Thats because
+by default the spipe function will try to read the whole stream when at the
+end of chained call, so if the streams ends synchronously, an array with the
+emitted chunks will be returned. Stream wrappers for arrays/ranges are
+provided(See example below).
+
 Streams can be used to solve a great range of problems. For a introduction on
 streams, read @substack 's [stream
 handbook](https://github.com/substack/stream-handbook).
@@ -30,7 +37,7 @@ PR](https://github.com/jashkenas/underscore/pull/1183) and is based on
 [lisp chaining
 syntax](http://www.lispworks.com/documentation/lw60/KW-W/html/kwprolog-w-31.htm#pgfId-889886)
 
-## Usage
+## Basic usage
 
 
 ```js
@@ -65,7 +72,7 @@ Explanation:
 
 
 The data is processed by each layer of the pipeline as soon as its available
-without buffering. This opens the possibility for doing things like:
+without buffering, eg:
 
 ```js
 var range = require('s-pipe/lib/range');
@@ -82,9 +89,27 @@ The 'range' function above returns a readable stream that yields numbers from
 be closed as soon as 81 reaches the 'find' stream.
 
 
-As shown above, the functions are kept in separate files for optimzed builds
-with browserify.
+The functions are kept in separate files for optimzed builds with browserify.
 
+
+## Examples
+
+Print comments in python script
+```js
+var fs = require('fs');
+var spipe = require('s-pipe');
+var filter = require('s-pipe/lib/filter');
+var map = require('s-pipe/lib/map');
+var split = require('s-pipe/lib/split');
+
+spipe(fs.createReadStream('script.py'))
+     (split)
+     (filter, function(line) { return /#/.test(line); })
+     (map, function(line) { return /#(.*)/.exec(line)[1] + '\n'; })
+     ().pipe(process.stdout)
+```
+
+Read through the 'examples directory' for more
 
 ## Development
 
