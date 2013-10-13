@@ -74,8 +74,18 @@
               </a>
             
               
+              <a class="source" href="reject.html">
+                reject.js
+              </a>
+            
+              
               <a class="source" href="s-pipe.html">
                 s-pipe.js
+              </a>
+            
+              
+              <a class="source" href="split.html">
+                split.js
               </a>
             
           </div>
@@ -101,7 +111,9 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> AnythingStream = require(<span class="string">'./anything'</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> Readable = require(<span class="string">'stream'</span>).Readable;
+
+<span class="keyword">var</span> classic = require(<span class="string">'classic'</span>);</pre></div></div>
             
         </li>
         
@@ -112,28 +124,21 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>PullStream is a Readable stream that pulls/transforms data from another
-Readable stream.</p>
-<p>Creating a PullStream from a Readable is a lot like connecting a Readable to
-a Writable through the &#39;pipe&#39; method. There are a couple of differences
-though:</p>
-<ul>
-<li><p>Pipes cannot operate synchronously(at least I couldn&#39;t do it). This means
-it cannot cooperate with data sources that are readily available in memory
-like Array/RangeStreams to produce immediate results</p>
-</li>
-<li><p>Control of the &quot;start button&quot; is inverted: While with a pipeline
-the leftmost end of the pipe starts sending data, a graph of PullStreams
-will start pulling the data from the rightmost end(thus the name).</p>
-</li>
-</ul>
-<p>PullStreams are also AnythingStreams, that means null and undefined values
-may pass through it.</p>
+              <p>PullStream is a Readable stream that pulls, processes and forwards data from
+another Readable stream.</p>
+<p>This class is similar to the &#39;Transform&#39; class, but operates synchronously
+and no implicity buffering happens(it has to be handled by subclasses)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> PullStream = AnythingStream.extend({
-  constructor: <span class="function"><span class="keyword">function</span> <span class="title">PullStream</span><span class="params">(source)</span> {</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> PullStream = classic({
+  constructor: <span class="function"><span class="keyword">function</span> <span class="title">PullStream</span><span class="params">(source)</span> {</span>
+    Readable.call(<span class="keyword">this</span>, {objectMode: <span class="literal">true</span>});
+    <span class="keyword">this</span>._pullState = {started: <span class="literal">false</span>, source: source, ended: <span class="literal">false</span>};
+  },
+
+  _read: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> _<span class="keyword">this</span> = <span class="keyword">this</span>, state = <span class="keyword">this</span>._pullState;</pre></div></div>
             
         </li>
         
@@ -144,16 +149,16 @@ may pass through it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>The objectMode is the same as the source&#39;s</p>
+              <p>Once this instance started pulling data, this method does nothing.  The
+flow will be driven by &#39;resume/pause&#39; which will be delegated to the
+source stream.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    AnythingStream.call(<span class="keyword">this</span>, {objectMode: source._readableState.objectMode});
-    <span class="keyword">this</span>._source = source;
-    <span class="keyword">this</span>._pullStarted = <span class="literal">false</span>;
-  },
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (state.started) <span class="keyword">return</span>;
 
-  _read: <span class="keyword">function</span>() {</pre></div></div>
+    state.started = <span class="literal">true</span>;
+    state.ended = <span class="literal">false</span>;</pre></div></div>
             
         </li>
         
@@ -164,19 +169,17 @@ may pass through it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Once the pull has started, this method does nothing. The flow will
-be driven by &#39;resume/pause&#39; which will be delegated to the source
-stream.</p>
+              <p>Whenever this stream is paused or resumed, forward it to the source</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (<span class="keyword">this</span>._pullStarted) <span class="keyword">return</span>;
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">this</span>.on(<span class="string">'pause'</span>, <span class="keyword">function</span>() {
+      state.source.pause();
+    });
 
-    <span class="keyword">var</span> _<span class="keyword">this</span> = <span class="keyword">this</span>;
-    <span class="keyword">var</span> buffer = <span class="keyword">this</span>._readableState.buffer;
-
-    <span class="keyword">this</span>._pullStarted = <span class="literal">true</span>;
-    <span class="keyword">this</span>._ended = <span class="literal">false</span>;</pre></div></div>
+    <span class="keyword">this</span>.on(<span class="string">'resume'</span>, <span class="keyword">function</span>() {
+      state.source.resume();
+    });</pre></div></div>
             
         </li>
         
@@ -187,16 +190,20 @@ stream.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Whenever this stream is paused or resumed, forward it to the source</p>
+              <p>Forward all events emitted by the source</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">this</span>.on(<span class="string">'pause'</span>, <span class="keyword">function</span>() {
-      _<span class="keyword">this</span>._source.pause();
+            <div class="content"><div class='highlight'><pre>    state.source.on(<span class="string">'close'</span>, <span class="keyword">function</span>() {
+      _<span class="keyword">this</span>.emit(<span class="string">'close'</span>);
     });
 
-    <span class="keyword">this</span>.on(<span class="string">'resume'</span>, <span class="keyword">function</span>() {
-      _<span class="keyword">this</span>._source.resume();
+    state.source.on(<span class="string">'error'</span>, <span class="keyword">function</span>(err) {
+      _<span class="keyword">this</span>.emit(<span class="string">'error'</span>, err);
+    });
+
+    state.source.on(<span class="string">'end'</span>, <span class="keyword">function</span>() {
+      _<span class="keyword">this</span>._end();
     });</pre></div></div>
             
         </li>
@@ -208,21 +215,26 @@ stream.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Forward all events emitted by the source</p>
+              <p>All source&#39;s data chunks get handled by the &#39;_process&#39; internal method
+implemented by subclasses, which may buffer, ignore or call the
+&#39;_forward&#39; method to immediatelly forward data</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">this</span>._source.on(<span class="string">'close'</span>, <span class="keyword">function</span>() {
-      _<span class="keyword">this</span>.emit(<span class="string">'close'</span>);
+            <div class="content"><div class='highlight'><pre>    state.source.on(<span class="string">'data'</span>, <span class="keyword">function</span>(chunk) {
+      _<span class="keyword">this</span>._process(chunk);
     });
+  },
 
-    <span class="keyword">this</span>._source.on(<span class="string">'error'</span>, <span class="keyword">function</span>(err) {
-      _<span class="keyword">this</span>.emit(<span class="string">'error'</span>, err);
-    });
+  _forward: <span class="keyword">function</span>(chunk) {
+    <span class="keyword">this</span>.emit(<span class="string">'data'</span>, chunk);
+  },
 
-    <span class="keyword">this</span>._source.on(<span class="string">'end'</span>, <span class="keyword">function</span>() {
-      _<span class="keyword">this</span>._end();
-    });</pre></div></div>
+  _end: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> _<span class="keyword">this</span> = <span class="keyword">this</span>, state = <span class="keyword">this</span>._pullState;
+
+    <span class="keyword">if</span> (!state.ended) {
+      state.ended = <span class="literal">true</span>;</pre></div></div>
             
         </li>
         
@@ -233,48 +245,6 @@ stream.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>All source&#39;s data chunks get handled by the &#39;_pulled&#39; internal method,
-implemented by subclasses</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">this</span>._source.on(<span class="string">'data'</span>, <span class="keyword">function</span>(chunk) {
-      _<span class="keyword">this</span>._pulled(chunk);</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-8">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
-              <p>If something was pushed into the internal buffer, we pop and re-emit
-so the data will be immediatelly available to the next consumer</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">while</span> (buffer.length)
-        _<span class="keyword">this</span>.emit(<span class="string">'data'</span>, buffer.shift());
-    });
-  },
-
-  _end: <span class="keyword">function</span>() {
-    <span class="keyword">var</span> _<span class="keyword">this</span> = <span class="keyword">this</span>;
-
-    <span class="keyword">if</span> (!<span class="keyword">this</span>._ended) {
-      <span class="keyword">this</span>._ended = <span class="literal">true</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-9">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
-              </div>
               <p>The &#39;end&#39; event must be emitted in the next iteration, or listening to
 it after hooking into the &#39;data&#39; event from a synchronous data source
 would have no effect</p>
@@ -283,36 +253,36 @@ would have no effect</p>
             
             <div class="content"><div class='highlight'><pre>      setImmediate(<span class="keyword">function</span>() { _<span class="keyword">this</span>.emit(<span class="string">'end'</span>); });
     }
-  },</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-10">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
-              </div>
-              <p>This will be done when either an &#39;end&#39; event was emitted by the source
-or the source has a &#39;_done&#39; method and it returns true</p>
+  },
 
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  _done: <span class="keyword">function</span>() {
-    <span class="keyword">return</span> <span class="keyword">this</span>._ended || (<span class="keyword">this</span>._source._done ? <span class="keyword">this</span>._source._done() : <span class="literal">false</span>);
+  _done: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> state = <span class="keyword">this</span>._pullState;
+
+    <span class="keyword">return</span> state.ended || (state.source._done ? state.source._done() : <span class="literal">false</span>);
   },
 
   setEncoding: <span class="keyword">function</span>(encoding) {
-    <span class="keyword">return</span> <span class="keyword">this</span>._source.setEncoding(encoding);
+    <span class="keyword">return</span> <span class="keyword">this</span>._pullState.source.setEncoding(encoding);
   },
 
   close: <span class="keyword">function</span>() {
-    <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span>._source.close === <span class="string">'function'</span>)
-      <span class="keyword">this</span>._source.close();
+    <span class="keyword">var</span> state = <span class="keyword">this</span>._pullState;
+
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> state.source.close === <span class="string">'function'</span>)
+      state.source.close();
+
+    <span class="keyword">this</span>._end();
+  },
+
+  destroy: <span class="keyword">function</span>() {
+    <span class="keyword">var</span> state = <span class="keyword">this</span>._pullState;
+
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> state.source.destroy === <span class="string">'function'</span>)
+      state.source.destroy();
+
     <span class="keyword">this</span>._end();
   }
-});
+}, Readable);
 
 
 module.exports = PullStream;</pre></div></div>

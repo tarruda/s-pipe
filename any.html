@@ -74,8 +74,18 @@
               </a>
             
               
+              <a class="source" href="reject.html">
+                reject.js
+              </a>
+            
+              
               <a class="source" href="s-pipe.html">
                 s-pipe.js
+              </a>
+            
+              
+              <a class="source" href="split.html">
+                split.js
               </a>
             
           </div>
@@ -123,15 +133,15 @@ matches the predicate, else it will emit &#39;false&#39;</p>
     <span class="keyword">this</span>._cb = cb;
   },
 
-  _pulled: <span class="keyword">function</span>(chunk) {
+  _process: <span class="keyword">function</span>(chunk) {
     <span class="keyword">if</span> (<span class="keyword">this</span>._cb(chunk)) {
-      <span class="keyword">this</span>.push(<span class="literal">true</span>);
+      <span class="keyword">this</span>._forward(<span class="literal">true</span>);
       <span class="keyword">this</span>.pause();
       <span class="keyword">this</span>.close();
       <span class="keyword">return</span>;
     }
 
-    <span class="keyword">if</span> (<span class="keyword">this</span>._done()) <span class="keyword">this</span>.push(<span class="literal">false</span>);
+    <span class="keyword">if</span> (<span class="keyword">this</span>._done()) <span class="keyword">this</span>._forward(<span class="literal">false</span>);
   }
 });
 

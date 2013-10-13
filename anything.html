@@ -74,8 +74,18 @@
               </a>
             
               
+              <a class="source" href="reject.html">
+                reject.js
+              </a>
+            
+              
               <a class="source" href="s-pipe.html">
                 s-pipe.js
+              </a>
+            
+              
+              <a class="source" href="split.html">
+                split.js
               </a>
             
           </div>
@@ -114,10 +124,10 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>AnythingStreams are readable streams that can emit anything(including
-null and undefined values). This is done by hooking into the Readable class
-internals, which is a hacky and ugly solution, but it gets the job done and
-the damage is kept contained in this file.</p>
+              <p>AnythingStreams are readable streams that can buffer/emit anything(including
+null and undefined values). This is done by manually modifying the
+_readableState buffer. This is a hacky but needed because the Readable
+classes ends when a null values is passed to the &#39;push&#39; method.</p>
 <p>The class provides an implementation for the &#39;_read&#39; method. Subclasses
 need to implement the &#39;_next&#39; method to yield more data.</p>
 

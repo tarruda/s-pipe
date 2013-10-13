@@ -74,8 +74,18 @@
               </a>
             
               
+              <a class="source" href="reject.html">
+                reject.js
+              </a>
+            
+              
               <a class="source" href="s-pipe.html">
                 s-pipe.js
+              </a>
+            
+              
+              <a class="source" href="split.html">
+                split.js
               </a>
             
           </div>
@@ -133,7 +143,7 @@ to the next consumer.</p>
     <span class="keyword">this</span>._started = initial !== undef &amp;&amp; initial !== <span class="literal">null</span>;
   },
 
-  _pulled: <span class="keyword">function</span>(chunk) {
+  _process: <span class="keyword">function</span>(chunk) {
     <span class="keyword">if</span> (<span class="keyword">this</span>._started) {</pre></div></div>
             
         </li>
@@ -166,7 +176,7 @@ next consumer.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> (<span class="keyword">this</span>._done()) <span class="keyword">this</span>.push(<span class="keyword">this</span>._current);
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> (<span class="keyword">this</span>._done()) <span class="keyword">this</span>._forward(<span class="keyword">this</span>._current);
     } <span class="keyword">else</span> {</pre></div></div>
             
         </li>

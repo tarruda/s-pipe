@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>all.js</title>
+  <title>split.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -96,7 +96,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>all.js</h1>
+                  <h1>split.js</h1>
               </div>
           </li>
         
@@ -122,32 +122,48 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>The AllStream class will emit &#39;true&#39; if all chunks emitted by its source
-match the predicate, else it will emit &#39;false&#39;</p>
+              <p>SplitStream will use the provided pattern(defaulting to newline) to
+split incoming text</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> AllStream = PullStream.extend({
-  constructor: <span class="function"><span class="keyword">function</span> <span class="title">AllStream</span><span class="params">(source, cb)</span> {</span>
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> SplitStream = PullStream.extend({
+  constructor: <span class="function"><span class="keyword">function</span> <span class="title">SplitStream</span><span class="params">(source, pattern)</span> {</span>
     PullStream.call(<span class="keyword">this</span>, source);
-    <span class="keyword">this</span>._cb = cb;
-  },
+    <span class="keyword">this</span>._pattern = pattern || <span class="regexp">/\r\n|\r|\n/</span>;
+    <span class="keyword">this</span>._buffered = <span class="string">''</span>;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Each chunk pulled from the source is passed through the transform
+function.</p>
 
-  _process: <span class="keyword">function</span>(chunk) {
-    <span class="keyword">if</span> (!<span class="keyword">this</span>._cb(chunk)) {
-      <span class="keyword">this</span>._forward(<span class="literal">false</span>);
-      <span class="keyword">this</span>.pause();
-      <span class="keyword">this</span>.close();
-      <span class="keyword">return</span>;
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _process: <span class="keyword">function</span>(chunk) {
+    <span class="keyword">var</span> match, line;
+
+    <span class="keyword">this</span>._buffered += chunk;
+
+    <span class="keyword">while</span> (match = <span class="keyword">this</span>._pattern.exec(<span class="keyword">this</span>._buffered)) {
+      line = <span class="keyword">this</span>._buffered.slice(<span class="number">0</span>, match.index);
+      <span class="keyword">this</span>._buffered = <span class="keyword">this</span>._buffered.slice(match.index + match[<span class="number">0</span>].length);
+      <span class="keyword">this</span>._forward(line);
     }
-
-    <span class="keyword">if</span> (<span class="keyword">this</span>._done()) <span class="keyword">this</span>._forward(<span class="literal">true</span>);
   }
 });
 
 
-module.exports = <span class="function"><span class="keyword">function</span> <span class="title">all</span><span class="params">(cb)</span> {</span>
-  <span class="keyword">return</span> <span class="keyword">new</span> AllStream(<span class="keyword">this</span>, cb);
+module.exports = <span class="function"><span class="keyword">function</span> <span class="title">split</span><span class="params">(pattern)</span> {</span>
+  <span class="keyword">return</span> <span class="keyword">new</span> SplitStream(<span class="keyword">this</span>, pattern);
 };</pre></div></div>
             
         </li>

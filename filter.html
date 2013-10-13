@@ -74,8 +74,18 @@
               </a>
             
               
+              <a class="source" href="reject.html">
+                reject.js
+              </a>
+            
+              
               <a class="source" href="s-pipe.html">
                 s-pipe.js
+              </a>
+            
+              
+              <a class="source" href="split.html">
+                split.js
               </a>
             
           </div>
@@ -122,8 +132,8 @@
     <span class="keyword">this</span>._cb = cb;
   },
 
-  _pulled: <span class="keyword">function</span>(chunk) {
-    <span class="keyword">if</span> (<span class="keyword">this</span>._cb(chunk)) <span class="keyword">this</span>.push(chunk);
+  _process: <span class="keyword">function</span>(chunk) {
+    <span class="keyword">if</span> (<span class="keyword">this</span>._cb(chunk)) <span class="keyword">this</span>._forward(chunk);
   }
 });
 
