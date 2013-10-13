@@ -9,9 +9,13 @@ runMocha({
     },
 
     'array-like objects': function() {
-      var p = spipe(array({'0': 2, 4: 5, length: 5}))();
-      // var u; // undefined
-      // deepEqual()(), [2, u, u, u, 5]);
+      // deepEqual seems to be breaking in ie6-8 in this test
+      var result = spipe(array({'0': 2, 4: 5, length: 5}))();
+      equal(result[0], 2);
+      equal(result[1], undefined);
+      equal(result[2], undefined);
+      equal(result[3], undefined);
+      equal(result[4], 5);
     },
 
     'lazily evaluate the stream': function(done) {
