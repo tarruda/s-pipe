@@ -34,7 +34,8 @@
     "grunt-release": "~0.5.1"
   },
   "dependencies": {
-    "classic": "0.0.2"
+    "classic": "0.0.2",
+    "has": "0.0.1"
   },
   "scripts": {
     "test": "grunt ci"
