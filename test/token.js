@@ -1,4 +1,4 @@
-var spipe = require('../lib/s-pipe');
+var spipe = require('../lib');
 var TokenStream = require('../lib/token');
 
 // Lexer for a simple expression evaluator that understands simple assignments
@@ -49,16 +49,16 @@ var CalculatorTokenStream = TokenStream.extend({
 });
 
 
+function tokenize() {
+  return new CalculatorTokenStream(this);
+}
+
+
 runMocha({
   'TokenStream': {
-    'lex string': function() {
-      var stream = new CalculatorTokenStream();
-      var result = [];
-      stream.on('data', function(chunk) {
-        result.push(chunk);
-      });
-      stream.write('5.5   0xff  true+10');
-      deepEqual(result, [
+
+    'tokenize synchronously': function() {
+      deepEqual(spipe('5.5   0xff  true+10')(tokenize)(), [
         '5.5',
         '0xff',
         'true',
@@ -66,5 +66,22 @@ runMocha({
         '10'
       ]);
     },
+
+    'lazily evaluate the stream': function(done) {
+      var result = [];
+      var stream = spipe('5.5   0xff  true+10')(tokenize)(false);
+
+      stream.on('data', function(n) { result.push(n); });
+      stream.on('end', function() {
+        deepEqual(result, [
+          '5.5',
+          '0xff',
+          'true',
+          '+',
+          '10'
+        ]);
+        done();
+      });
+    }
   }
 });

@@ -1,6 +1,4 @@
-var spipe = require('../lib/s-pipe');
-var range = require('../lib/range');
-var any = require('../lib/any');
+var _ = require('../_');
 
 
 function isEven(n) { return n % 2 === 0; }
@@ -9,16 +7,16 @@ function isEven(n) { return n % 2 === 0; }
 runMocha({
   'AnyStream': {
     'test streams synchronously': function() {
-      deepEqual(spipe(range(1, 1000, 2))(any, isEven)(), [false]);
+      deepEqual(_(1, 1000, 2).any(isEven).end(), [false]);
     },
 
     "closes the pipeline as soon as it finds a matching chunk": function() {
-      deepEqual(spipe(range(1, 10000000000))(any, isEven)(), [true]);
+      deepEqual(_(1, 10000000000).any(isEven).end(), [true]);
     },
 
     'lazily evaluate the stream': function(done) {
       var result = [];
-      var stream = spipe(range(1, 10000000000))(any, isEven)(false);
+      var stream = _(1, 10000000000).any(isEven).end(false);
 
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {

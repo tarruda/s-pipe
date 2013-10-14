@@ -1,6 +1,4 @@
-var spipe = require('../lib/s-pipe');
-var range = require('../lib/range');
-var filter = require('../lib/filter');
+var _ = require('../_');
 
 
 function even(n) { return n % 2 === 0; }
@@ -9,12 +7,12 @@ function even(n) { return n % 2 === 0; }
 runMocha({
   'FilterStream': {
     'filter values synchronously': function() {
-      deepEqual(spipe(range(1, 10))(filter, even)(), [2, 4, 6, 8, 10]);
+      deepEqual(_(1, 10).filter(even).end(), [2, 4, 6, 8, 10]);
     },
 
     'lazily evaluate the stream': function(done) {
       var result = [];
-      var stream = spipe(range(1, 10))(filter, even)(false);
+      var stream = _(1, 10).filter(even).end(false);
 
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {

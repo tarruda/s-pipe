@@ -1,6 +1,4 @@
-var spipe = require('../lib/s-pipe');
-var range = require('../lib/range');
-var reject = require('../lib/reject');
+var _ = require('../_');
 
 
 function even(n) { return n % 2 === 0; }
@@ -9,12 +7,12 @@ function even(n) { return n % 2 === 0; }
 runMocha({
   'RejectStream': {
     'reject values synchronously': function() {
-      deepEqual(spipe(range(1, 10))(reject, even)(), [1, 3, 5, 7, 9]);
+      deepEqual(_(1, 10).reject(even).end(), [1, 3, 5, 7, 9]);
     },
 
     'lazily evaluate the stream': function(done) {
       var result = [];
-      var stream = spipe(range(1, 10))(reject, even)(false);
+      var stream = _(1, 10).reject(even).end(false);
 
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {

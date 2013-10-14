@@ -1,6 +1,4 @@
-var spipe = require('../lib/s-pipe');
-var range = require('../lib/range');
-var reduce = require('../lib/reduce');
+var _ = require('../_');
 
 
 function toSum(result, n) { return result + n; }
@@ -9,16 +7,16 @@ function toSum(result, n) { return result + n; }
 runMocha({
   'ReduceStream': {
     'reduce values synchronously': function() {
-      deepEqual(spipe(range(1, 3))(reduce, toSum)(), [6]);
+      deepEqual(_(1, 3).reduce(toSum).end(), [6]);
     },
 
     'reduce values with an initial value': function() {
-      deepEqual(spipe(range(1, 3))(reduce, toSum, 100)(), [106]);
+      deepEqual(_(1, 3).reduce(toSum, 100).end(), [106]);
     },
 
     'lazily evaluate the stream': function(done) {
       var result = [];
-      var stream = spipe(range(1, 10, 3))(reduce, toSum)(false);
+      var stream = _(1, 10, 3).reduce(toSum).end(false);
 
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {

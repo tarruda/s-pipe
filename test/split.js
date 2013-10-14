@@ -2,8 +2,7 @@ var Readable = require('stream').Readable;
 
 var classic = require('classic');
 
-var spipe = require('../lib/s-pipe');
-var range = require('../lib/range');
+var spipe = require('../lib');
 var split = require('../lib/split');
 
 

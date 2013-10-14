@@ -1,15 +1,15 @@
-var spipe = require('../lib/s-pipe');
+var spipe = require('../lib');
 var array = require('../lib/array');
 
 
 runMocha({
   'ArrayStream': {
     'array': function() {
-      deepEqual(spipe(array([1, 2, 3]))(), [1, 2, 3]);
+      deepEqual(spipe([1, 2, 3])(), [1, 2, 3]);
     },
 
     'array-like objects': function() {
-      // deepEqual seems to be breaking in ie6-8 in this test
+      // deepEqual seems to be breaking in ie6-8 for this test
       var result = spipe(array({'0': 2, 4: 5, length: 5}))();
       equal(result[0], 2);
       equal(result[1], undefined);
@@ -20,7 +20,7 @@ runMocha({
 
     'lazily evaluate the stream': function(done) {
       var result = [];
-      var stream = spipe(array([1, 2, 3]))(false);
+      var stream = spipe([1, 2, 3])(false);
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {
         deepEqual(result, [1, 2, 3]);
