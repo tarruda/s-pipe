@@ -20,6 +20,14 @@
       "url": "https://github.com/tarruda/s-pipe/blob/master/LICENSE-MIT"
     }
   ],
+  "keywords": [
+    "stream",
+    "streams",
+    "pipe",
+    "unix",
+    "modularization",
+    "io"
+  ],
   "main": "./lib/index",
   "devDependencies": {
     "grunt": "~0.4.1",

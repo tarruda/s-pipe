@@ -2,47 +2,34 @@ var Readable = require('stream').Readable;
 
 var classic = require('classic');
 
-var spipe = require('../lib');
-var split = require('../lib/split');
+var _ = require('../_');
 
+var chunks = [
+  'Some text ',
+  'that is ',
+  'split\n',
+  'into ',
+  'newlines. ',
+  'This\nchunk\r\nhas\nmany\rlines\n'
+];
 
 var StubTextStream = classic({
   constructor: function StubTextStream() {
     Readable.call(this);
-    this.async = false;
-    this._chunks = [
-      'Some text ',
-      'that is ',
-      'split\n',
-      'into ',
-      'newlines. ',
-      'This\nchunk\r\nhas\nmany\rlines\n'
-    ];
+    this._chunks = chunks.slice();
   },
 
   _read: function() {
     var _this = this;
 
-    if (this.async) {
-      setImmediate(function() { _this.push(_this._chunks.shift()); });
-    } else {
-      this.push(this._chunks.shift());
-    }
-
-    if (this._done()) this.push(null);
-  },
-
-  _done: function() { return !this._chunks.length; }
+    setImmediate(function() { _this.push(_this._chunks.shift()); });
+  }
 }, Readable);
 
 runMocha({
   'SplitStream': {
-    beforeEach: function() {
-      this.input = new StubTextStream();
-    },
-
     'split text synchronously': function() {
-      deepEqual(spipe(this.input)(split)(), [
+      deepEqual(_(chunks).split().end(), [
         'Some text that is split',
         'into newlines. This',
         'chunk',
@@ -53,10 +40,8 @@ runMocha({
     },
 
     'lazily evaluate the stream': function(done) {
-      this.input.async = true;
-
       var result = [];
-      var stream = spipe(this.input)(split)();
+      var stream = _(new StubTextStream()).split().end();
 
       stream.on('data', function(n) { result.push(n); });
       stream.on('end', function() {
