@@ -12,15 +12,15 @@ var CalculatorParseStream = ParseStream.extend({
 
       expression: [
         'literal',
-        ['expression', 'operator', 'literal']
+        'expression operator literal -> binaryExpression'
       ],
 
       literal: [
-        'base2int',
-        'base8int',
-        'base16int',
-        'float',
-        'boolean'
+        'base2int -> parseInt2',
+        'base8int -> parseInt8',
+        'base16int -> parseInt16',
+        'float -> parseFloat',
+        'boolean -> parseBoolean'
       ]
     }
   }
