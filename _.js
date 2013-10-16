@@ -4,6 +4,7 @@ var createChainable = require('./lib/create_chainable');
 module.exports = createChainable({
   all: require('./lib/all'),
   any: require('./lib/any'),
+  chars: require('./lib/chars'),
   filter: require('./lib/filter'),
   find: require('./lib/find'),
   groupBy: require('./lib/group_by'),

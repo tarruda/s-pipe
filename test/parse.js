@@ -1,26 +1,19 @@
 var spipe = require('../lib');
 var ParseStream = require('../lib/parse');
 
-var CalculatorParseStream = ParseStream.extend({
+var TestParseStream = ParseStream.extend({
   grammar: {
-    start: 'program',
+    start: 'E',
 
     rules: {
-      program: [
-        'expression'
+      E: [
+        'E + B',
+        'B'
       ],
 
-      expression: [
-        'literal',
-        'expression operator literal -> binaryExpression'
-      ],
-
-      literal: [
-        'base2int -> parseInt2',
-        'base8int -> parseInt8',
-        'base16int -> parseInt16',
-        'float -> parseFloat',
-        'boolean -> parseBoolean'
+      B: [
+        '0',
+        '1'
       ]
     }
   }
@@ -28,7 +21,7 @@ var CalculatorParseStream = ParseStream.extend({
 
 
 function parse() {
-  return new CalculatorParseStream(this);
+  return new TestParseStream(this);
 }
 
 
