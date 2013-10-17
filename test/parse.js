@@ -9,13 +9,17 @@ var TestParseStream = ParseStream.extend({
 
     rules: {
       E: [
-        'E + B',
+        'E operator B',
         'B'
       ],
 
       B: [
         '0',
         '1'
+      ],
+
+      operator: [
+        '+', '-'
       ]
     }
   },
@@ -31,11 +35,28 @@ runMocha({
   'TokenStream': {
 
     'parse synchronously': function() {
-      deepEqual(spipe('0+1+0+1+1')
+      deepEqual(spipe('0+1+0-1+1')
                (chars)
                (reject, function(c) { return (/\s/).test(c); })
                (parse)(),
-               [[[[['0', '+', '1'], '+', '0'], '+', '1'], '+', '1']]);
+               [[[[['0', '+', '1'], '+', '0'], '-', '1'], '+', '1']]);
+    },
+
+    'syntax errors': function() {
+      var throwed = false;
+
+      try {
+        spipe('0+1*0-1+1')
+              (chars)
+              (reject, function(c) { return (/\s/).test(c); })
+              (parse)();
+      } catch (e) {
+        equal(e.message, "Unexpected symbol '*'. Expecting 'operator'");
+        throwed = true;
+      }
+
+      if (!throwed)
+        throw new Error('Expecting exception');
     }
   }
 });
