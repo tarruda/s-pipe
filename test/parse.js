@@ -1,5 +1,6 @@
 var spipe = require('../lib');
 var chars = require('../lib/chars');
+var reject = require('../lib/reject');
 var ParseStream = require('../lib/parse');
 
 var TestParseStream = ParseStream.extend({
@@ -17,7 +18,7 @@ var TestParseStream = ParseStream.extend({
         '1'
       ]
     }
-  }
+  },
 });
 
 
@@ -30,9 +31,11 @@ runMocha({
   'TokenStream': {
 
     'parse synchronously': function() {
-      deepEqual(spipe('0+1')(chars)(parse)(), [
-        ['0', '+', '1']
-      ]);
+      deepEqual(spipe('0+1+0+1+1')
+               (chars)
+               (reject, function(c) { return (/\s/).test(c); })
+               (parse)(),
+               [[[[['0', '+', '1'], '+', '0'], '+', '1'], '+', '1']]);
     }
   }
 });
