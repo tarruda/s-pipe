@@ -11,5 +11,6 @@ module.exports = createChainable({
   map: require('./lib/map'),
   reduce: require('./lib/reduce'),
   reject: require('./lib/reject'),
-  split: require('./lib/split')
+  split: require('./lib/split'),
+  parse: require('./lib/parse').parse
 });

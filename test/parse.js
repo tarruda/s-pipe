@@ -1,9 +1,23 @@
-var spipe = require('../lib');
-var chars = require('../lib/chars');
-var reject = require('../lib/reject');
-var ParseStream = require('../lib/parse');
+var _ = require('../_');
+var ParseStream = require('../lib/parse').ParseStream;
 
-var TestParseStream = ParseStream.extend({
+// var LR1Stream = ParseStream.extend({
+//   grammar: {
+//     rules: {
+//       start: [
+//         'expression EOF'
+//       ],
+
+//       expression: [
+//         'if true expression',
+//         'if true expression else expression',
+//         '0'
+//       ],
+//     }
+//   }
+// });
+
+var LR0Stream = ParseStream.extend({
   grammar: {
     start: 'program',
 
@@ -43,23 +57,20 @@ var TestParseStream = ParseStream.extend({
 });
 
 
-function parse() {
-  return new TestParseStream(this);
-}
-
-
-function p(str) {
-  return spipe(str)
-              (chars)
-              (reject, function(c) { return (/\s/).test(c); })
-              (parse)();
-}
 
 runMocha({
-  'TokenStream': {
+  'LR0Stream': {
+    beforeEach: function() {
+      this.p = function(str) {
+        return _(str)
+          .chars()
+          .reject(function(c) { return (/\s/).test(c); })
+          .parse(LR0Stream).end();
+      };
+    },
 
     'parse synchronously': function() {
-      deepEqual(p('0+1+0-1+1'),
+      deepEqual(this.p('0+1+0-1+1'),
                [[[[[['0', '+', '1'], '+', '0'], '-', '1'], '+', '1'], 'EOF']]);
     },
 
@@ -67,7 +78,7 @@ runMocha({
       var throwed = false;
 
       try {
-        p('0+1*0-1+1');
+        this.p('0+1*0-1+1');
       } catch (e) {
         equal(e.message, "Unexpected '*'. Expecting 'operator' or 'EOF'");
         throwed = true;
@@ -81,7 +92,7 @@ runMocha({
       var throwed = false;
 
       try {
-        p('0+1+--1+1');
+        this.p('0+1+--1+1');
       } catch (e) {
         equal(e.message, "Unexpected '-'. Expecting 'literal'");
         throwed = true;
