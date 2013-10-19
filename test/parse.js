@@ -23,7 +23,7 @@ var LR0Stream = ParseStream.extend({
 
     rules: {
       program: [
-        'expression EOF'
+        'expression'
       ],
 
       expression: [
@@ -80,7 +80,7 @@ runMocha({
       try {
         this.p('0+1*0-1+1');
       } catch (e) {
-        equal(e.message, "Unexpected '*'. Expecting 'operator' or 'EOF'");
+        equal(e.message, "Unexpected '*'. Expecting 'operator'");
         throwed = true;
       }
 
