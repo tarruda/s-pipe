@@ -1,22 +1,6 @@
 var _ = require('../_');
 var ParseStream = require('../lib/parse').ParseStream;
 
-var LR1Stream = ParseStream.extend({
-  grammar: {
-    rules: {
-      start: [
-        'expression'
-      ],
-
-      expression: [
-        'if true expression',
-        'if true expression else expression',
-        '0'
-      ],
-    }
-  }
-});
-
 var LR0Stream = ParseStream.extend({
   grammar: {
     start: 'program',
@@ -57,6 +41,74 @@ var LR0Stream = ParseStream.extend({
 });
 
 
+var LR1Stream = ParseStream.extend({
+  grammar: {
+    rules: {
+      start: [
+        'expression'
+      ],
+
+      expression: [
+        'if true expression',
+        'if true expression else expression',
+        '0'
+      ],
+    }
+  }
+});
+
+// yacc grammar, taken from http://www.cs.man.ac.uk/~pjj/complang/g2lr.html
+var LR2Stream = ParseStream.extend({
+  grammar: {
+    start: 'yacc',
+
+    rules: {
+      yacc: [
+        'rule -> yacc1',
+        'yacc rule -> yacc2'
+      ],
+
+      rule: [
+        'rulebody',
+        'rulebody ;'
+      ],
+
+      rulebody: [
+        'RULENAME : ALT -> rulebody1',
+        'rulebody | ALT -> rulebody2'
+      ]
+    }
+  },
+
+  actions: {
+    yacc1: function(rule) {
+      return {rules: [rule]};
+    },
+
+    yacc2: function(yacc, rule) {
+      yacc.rules.push(rule);
+      return yacc;
+    },
+
+    rule: function(rulebody) {
+      return rulebody;
+    },
+
+    rulebody1: function(rulename, colon, alt) {
+      return {
+        name: rulename,
+        alts: [1]
+      };
+    },
+  
+    rulebody2: function(rb, pipe, alt) {
+      rb.alts.push(rb.alts[rb.alts.length - 1] + 1);
+      return rb;
+    }
+  }
+});
+
+
 
 runMocha({
   'LR0Stream': {
@@ -71,7 +123,7 @@ runMocha({
 
     'parse synchronously': function() {
       deepEqual(this.p('0+1+0-1+1'),
-               [[[[[['0', '+', '1'], '+', '0'], '-', '1'], '+', '1'], 'EOF']]);
+               [[[[['0', '+', '1'], '+', '0'], '-', '1'], '+', '1']]);
     },
 
     'syntax error 1': function() {
@@ -116,11 +168,34 @@ runMocha({
                'if', 'true',
                      'if', 'true', '0',
                      'else', 'if', 'true', '0',
-                             'else', '0']), [[[
+                             'else', '0']), [[
         'if', 'true', [
               'if', 'true', [
                     'if', 'true', '0',
-                    'else', ['if', 'true', '0', 'else', '0']]]], 'EOF']]);
+                    'else', ['if', 'true', '0', 'else', '0']]]]]);
+    },
+  },
+
+  'LR2Stream': {
+    beforeEach: function() {
+      this.p = function(array) {
+        return _(array).parse(LR2Stream).end();
+      };
+    },
+  
+    'parse synchronously': function() {
+      deepEqual(this.p([
+        'RULENAME', ':', 'ALT', '|', 'ALT', ';',
+        'RULENAME', ':', 'ALT'
+        ]), [{
+          rules: [{
+            name: 'RULENAME',
+            alts: [1, 2]
+          }, {
+            name: 'RULENAME',
+            alts: [1]
+          }]
+        }]);
     },
   }
 });
