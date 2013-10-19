@@ -1,21 +1,21 @@
 var _ = require('../_');
 var ParseStream = require('../lib/parse').ParseStream;
 
-// var LR1Stream = ParseStream.extend({
-//   grammar: {
-//     rules: {
-//       start: [
-//         'expression EOF'
-//       ],
+var LR1Stream = ParseStream.extend({
+  grammar: {
+    rules: {
+      start: [
+        'expression'
+      ],
 
-//       expression: [
-//         'if true expression',
-//         'if true expression else expression',
-//         '0'
-//       ],
-//     }
-//   }
-// });
+      expression: [
+        'if true expression',
+        'if true expression else expression',
+        '0'
+      ],
+    }
+  }
+});
 
 var LR0Stream = ParseStream.extend({
   grammar: {
@@ -101,5 +101,26 @@ runMocha({
       if (!throwed)
         throw new Error('Expecting exception');
     }
+  },
+
+  'LR1Stream': {
+    beforeEach: function() {
+      this.p = function(array) {
+        return _(array).parse(LR1Stream).end();
+      };
+    },
+  
+    'parse synchronously': function() {
+      deepEqual(this.p([
+        'if', 'true',
+               'if', 'true',
+                     'if', 'true', '0',
+                     'else', 'if', 'true', '0',
+                             'else', '0']), [[[
+        'if', 'true', [
+              'if', 'true', [
+                    'if', 'true', '0',
+                    'else', ['if', 'true', '0', 'else', '0']]]], 'EOF']]);
+    },
   }
 });
