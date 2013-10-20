@@ -186,7 +186,8 @@ runMocha({
     'parse synchronously': function() {
       deepEqual(this.p([
         'RULENAME', ':', 'ALT', '|', 'ALT', ';',
-        'RULENAME', ':', 'ALT'
+        'RULENAME', ':', 'ALT',
+        'RULENAME', ':', 'ALT', '|', 'ALT', '|', 'ALT'
         ]), [{
           rules: [{
             name: 'RULENAME',
@@ -194,6 +195,9 @@ runMocha({
           }, {
             name: 'RULENAME',
             alts: [1]
+          }, {
+            name: 'RULENAME',
+            alts: [1, 2, 3]
           }]
         }]);
     },

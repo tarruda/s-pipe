@@ -44,7 +44,8 @@
   "dependencies": {
     "classic": "0.0.2",
     "has": "0.0.1",
-    "istype": "0.0.1"
+    "istype": "0.0.1",
+    "extend": "~1.2.1"
   },
   "scripts": {
     "test": "grunt ci"
