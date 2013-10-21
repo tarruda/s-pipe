@@ -1,61 +1,61 @@
 var _ = require('../_');
 var ParseStream = require('../lib/parse').ParseStream;
 
-var LR0Stream = ParseStream.extend({
-  grammar: {
-    start: 'program',
+// var LR0Stream = ParseStream.extend({
+//   grammar: {
+//     start: 'program',
 
-    rules: {
-      program: [
-        'expression'
-      ],
+//     rules: {
+//       program: [
+//         'expression'
+//       ],
 
-      expression: [
-        'literal',
-        'expression operator literal'
-      ],
+//       expression: [
+//         'literal',
+//         'expression operator literal'
+//       ],
 
-      literal: [
-        'digit',
-        'letter'
-      ],
+//       literal: [
+//         'digit',
+//         'letter'
+//       ],
 
-      digit: [
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
-      ],
+//       digit: [
+//         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+//       ],
 
-      letter: [
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-      ],
+//       letter: [
+//         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+//         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+//       ],
 
-      bool: [
-        'true', 'false'
-      ],
+//       bool: [
+//         'true', 'false'
+//       ],
 
-      operator: [
-        '+', '-'
-      ]
-    }
-  },
-});
+//       operator: [
+//         '+', '-'
+//       ]
+//     }
+//   },
+// });
 
 
-var LR1Stream = ParseStream.extend({
-  grammar: {
-    rules: {
-      start: [
-        'expression'
-      ],
+// var LR1Stream = ParseStream.extend({
+//   grammar: {
+//     rules: {
+//       start: [
+//         'expression'
+//       ],
 
-      expression: [
-        'if true expression',
-        'if true expression else expression',
-        '0'
-      ],
-    }
-  }
-});
+//       expression: [
+//         'if true expression',
+//         'if true expression else expression',
+//         '0'
+//       ],
+//     }
+//   }
+// });
 
 // yacc grammar, taken from http://www.cs.man.ac.uk/~pjj/complang/g2lr.html
 var LR2Stream = ParseStream.extend({
@@ -183,7 +183,7 @@ runMocha({
       };
     },
   
-    'parse synchronously': function() {
+    'only:parse synchronously': function() {
       deepEqual(this.p([
         'RULENAME', ':', 'ALT', '|', 'ALT', ';',
         'RULENAME', ':', 'ALT',
