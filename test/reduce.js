@@ -1,7 +1,9 @@
 var _ = require('../_');
+var Readable = require('stream').Readable;
 
 
 function toSum(result, n) { return result + n; }
+function toArray(result, n) { result.push(n); return result; }
 
 
 runMocha({
@@ -23,6 +25,26 @@ runMocha({
         deepEqual(result, [22]);
         done();
       });
+    },
+
+    'reduce incomplete streams': function(done) {
+      var source = new Readable({objectMode: true});
+      source._read = function() {};
+
+      source.push(1);
+      setImmediate(function() { 
+        source.push(2);
+        setImmediate(function() { 
+          source.push(3);
+          source.push(null);
+        });
+      });
+
+      _(source).reduce(toArray, []).end().on('data', function(array) {
+        deepEqual([1, 2, 3], array);
+        done();
+      });
+
     }
   }
 });
